@@ -18,7 +18,7 @@ is irrelevant.**
 left unassigned is not part of the search space and is considered impossible. It is forbidden
 to generate such an arrangement during evolution.
 
-Here you can find a pairwise relationship matrix of all **64 attendees**, who need to be
+[Here](https://liveeduisegiunl-my.sharepoint.com/:x:/g/personal/imagessi_novaims_unl_pt/EYTlb599xcZIlhLRp_lBUpUBdsxsFGoketsp5AcX1NuUew?e=fvOLyn) you can find a pairwise relationship matrix of all **64 attendees**, who need to be
 distributed across **8 tables**. You can also consult the chart of the guests and their
 relationships, as well as a table explaining relationship values.
 
