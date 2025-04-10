@@ -15,3 +15,9 @@ Each solution represents a complete seating arrangement, specifying which guests
 [Here](https://liveeduisegiunl-my.sharepoint.com/:x:/g/personal/imagessi_novaims_unl_pt/EYTlb599xcZIlhLRp_lBUpUBdsxsFGoketsp5AcX1NuUew?e=fvOLyn) you can find a pairwise relationship matrix of all **64 attendees**, who need to be distributed across **8 tables**. You can also consult the [chart](https://liveeduisegiunl-my.sharepoint.com/personal/imagessi_novaims_unl_pt/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fimagessi%5Fnovaims%5Funl%5Fpt%2FDocuments%2Fguests%2Epng&parent=%2Fpersonal%2Fimagessi%5Fnovaims%5Funl%5Fpt%2FDocuments&ga=1) of the guests and their relationships, as well as a [table](https://liveeduisegiunl-my.sharepoint.com/personal/imagessi_novaims_unl_pt/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fimagessi%5Fnovaims%5Funl%5Fpt%2FDocuments%2Frelationships%2Epng&parent=%2Fpersonal%2Fimagessi%5Fnovaims%5Funl%5Fpt%2FDocuments&ga=1) explaining relationship values.
 
 The goal is to maximize the overall relationship score by optimizing guest seatings within each table and then aggregating these scores across all tables.
+
+<img width="611" alt="guests" src="https://github.com/user-attachments/assets/3c559f23-9d97-44d8-a7e9-5e4af3992f4a" />
+
+<img width="631" alt="relationships" src="https://github.com/user-attachments/assets/dad2637e-d0ad-4bef-8cfb-fcf2fdb3b4d1" />
+
+
