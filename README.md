@@ -12,6 +12,7 @@ search space (no object is considered a solution if it doesn’t comply with the
 - Each guest must be assigned to exactly one table.
 - Table placement matters only in terms of grouping. The arrangement within a table
 is irrelevant.
+
 Impossible Configurations: Any arrangement where a guest is seated at multiple tables or
 left unassigned is not part of the search space and is considered impossible. It is forbidden
 to generate such an arrangement during evolution.
