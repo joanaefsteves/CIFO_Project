@@ -11,9 +11,25 @@ class SeatingArrangement:
                       and the value is the assigned table (0 to 7).
         - relations_mtx: A 64x64 numpy array with the pairwise relationship scores.
         """
+
         self.assignments = assignments 
         self.relations_mtx = relations_mtx
+        self.representation= self.generate_representation()
         self.fitness = self.fitness_table()
+    
+    def generate_representation(self):
+        """
+        Groups guests by tables based on their assignments.
+        Returns:
+        - A dictionary where keys are table numbers and values are lists of guest IDs.
+        """
+
+        tables = {table: [] for table in range(8)}
+
+        for guest_id, table_number in enumerate(self.assignments):
+            tables[table_number].append(guest_id)
+
+        return tables
     
     def fitness_table(self):
         """
@@ -41,3 +57,14 @@ class SeatingArrangement:
         
         return total_fitness
 
+    def __str__(self):
+        """
+        Returns a string showing the guests assigned to each table.
+        """
+        
+        output = ""
+
+        for table, guests in self.representation.items():
+            output += f"Table {table}: {guests}\n"
+            
+        return output
