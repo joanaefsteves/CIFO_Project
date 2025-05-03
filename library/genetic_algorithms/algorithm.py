@@ -1,7 +1,7 @@
 from typing import Callable
 from copy import deepcopy
+from library.solution import Solution
 import random
-#import Solution
 
 
 def get_best_ind(population: list[Solution], maximization: bool):
