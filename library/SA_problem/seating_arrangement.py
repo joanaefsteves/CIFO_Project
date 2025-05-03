@@ -3,12 +3,15 @@ from library.solution import Solution
 
 class SASolution(Solution):
 
-    # Joana:
-    # If we have the arrangmement and then create the representation
-    # it would be much harder to apply mutation and crossover using this class
-    # because they output the representation, which we would have to pass to a arrangement
-    # to be able to input it to class SAGASolution
-    # which we would then have to convert to a representation again
+    # Suggestion - Joana:
+
+    # If we have the arrangmement (array) and then create the representation (dict)
+    # it would be much harder to apply mutation and crossover
+    # because its much easier to apply them to an array rather than a dict
+    # so we would to have to pass it to an array for the crossover and mutation
+    # and then pass to a dict to be able to input it to class SAGASolution
+    
+    # If we always work directly with an array as the representation its simpler 
 
     def __init__ (self, repr: np.ndarray, relations_mtx: np.ndarray):
         """
