@@ -1,48 +1,40 @@
 from copy import deepcopy
 import random
 
-# TO BE ADAPTED
-# WE HAVE A NUMPY ARRAY NOT A STRING/LIST
-
-def swap_mutation(representation, mut_prob):
+def mutation(repr, mut_prob):
     """
     Applies swap mutation to a solution representation with a given probability.
 
     Swap mutation randomly selects two different positions (genes) in the 
-    representation and swaps their values. This operator is commonly used for 
-    permutation-based representations but works for any list or string.
-
-    The function preserves the type of the input representation: if the input is 
-    a string, the output will also be a string; if it's a list, the output will 
-    remain a list.
+    representation and swaps their values.
 
     Parameters:
-        representation (str or list): The solution to mutate.
+        representation (dict): The seating arrangement, where each key is a table index (0 to 7),
+                                and the value is a list of guest indices assigned to that table.
         mut_prob (float): The probability of performing the swap mutation.
 
     Returns:
-        str or list: A new solution with two genes swapped, of the same type as the input.
+        dict: A new seating arrangement with two guest assignments swapped between tables.
     """
 
-    new_representation = deepcopy(representation)
+    new_repr = deepcopy(repr)
 
     if random.random() <= mut_prob:
-        # Strings are not mutable. Let's convert temporarily to a list
-        if isinstance(representation, str):
-            new_representation = list(new_representation)
+        # Flatten
+        all_guests = [(guest, table) for table, guests in repr.items() for guest in guests]
 
-        first_idx = random.randint(0, len(representation) - 1)
+        # Randomly select two guests
+        guest1, table1 = random.choice(all_guests)
+        guest2, table2 = random.choice(all_guests)
 
-        # To guarantee we select two different positions
-        second_idx = first_idx
-        while second_idx == first_idx:
-            second_idx = random.randint(0, len(representation) - 1)
+        # Guarantee we select two different positions
+        while guest1 == guest2:
+            guest2, table2 = random.choice(all_guests)
 
-        new_representation[first_idx] = representation[second_idx]
-        new_representation[second_idx] = representation[first_idx]
-
-        # If representation was a string, convert list back to string
-        if isinstance(representation, str):
-            new_representation = "".join(new_representation)
+        # Swap tables
+        new_repr[table1].remove(guest1)
+        new_repr[table2].remove(guest2)
+        new_repr[table1].append(guest2)
+        new_repr[table2].append(guest1)
     
-    return new_representation
+    return new_repr
