@@ -1,7 +1,9 @@
 from copy import deepcopy
 import random
 
-def mutation(repr, mut_prob):
+# Search + 2 - Matilde
+
+def swap_mutation(repr, mut_prob):
     """
     Applies swap mutation to a solution representation with a given probability.
 

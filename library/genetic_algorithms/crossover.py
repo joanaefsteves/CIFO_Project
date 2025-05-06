@@ -43,6 +43,10 @@ def repair_repr(offspring_repr):
 
     return offspring_repr
 
+# 1. Cycle crossover - Tomás
+
+# 2. Geometric crossover 
+
 def one_point_overall(c_point, parent1, parent2, n):
     """
     Perform one-point crossover on two parent representations, where the crossover occurs at a single point overall tables
@@ -70,6 +74,7 @@ def one_point_overall(c_point, parent1, parent2, n):
 
     return repair_repr(offspring1), repair_repr(offspring2)
 
+'''
 def one_point_per_table(c_point, parent1, parent2, n):
     """
     Perform one-point crossover on two parent representations, where the crossover occurs at a single point for each table.
@@ -92,6 +97,7 @@ def one_point_per_table(c_point, parent1, parent2, n):
         offspring2[i] = parent2[i][:c_point] + parent1[i][c_point:]
 
     return repair_repr(offspring1), repair_repr(offspring2)
+'''
 
 
 def crossover(parent1_repr, parent2_repr, crossover_type):

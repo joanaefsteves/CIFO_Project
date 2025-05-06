@@ -8,14 +8,13 @@ class SASolution(Solution):
         Initializes a seating arrangement.
         
         Parameters:
-        - repr: A numpy array of length 64, where each index represents a guest
-                and the value is the assigned table (0 to 7).
         - relations_mtx: A 64x64 numpy array with the pairwise relationship scores.
         """
 
         self.relations_mtx = relations_mtx
         self.nr_tables = 8
         self.nr_guests = 64
+        self.fitness = self.fitness()
 
         if repr:
             repr = self.validate_repr(repr)

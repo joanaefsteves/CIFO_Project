@@ -11,6 +11,8 @@ def get_best_ind(population: list[Solution], maximization: bool):
     else:
         return population[fitness_list.index(min(fitness_list))]
 
+ # Adapt - Rita
+
 def genetic_algorithm(
     initial_population: list[Solution],
     max_gen: int,
