@@ -1,17 +1,31 @@
 from typing import Callable
 from copy import deepcopy
-from library.solution import Solution
+from solution import Solution
 import random
 
 
 def get_best_ind(population: list[Solution], maximization: bool):
+    """
+    Calculates the fitness of each individual in the population and 
+    selects the individual with the highest or lowest fitness, depending on the 
+    value of the 'maximization' argument.
+
+    Args:
+        population (list[Solution]): A list of Solution objects representing the population.
+        maximization (bool): If True, the function selects the individual with the highest fitness (maximization).
+                              If False, the function selects the individual with the lowest fitness (minimization).
+
+    Returns:
+        Solution: The individual with best fitness in the population.
+    """
+
     fitness_list = [ind.fitness() for ind in population]
+
     if maximization:
         return population[fitness_list.index(max(fitness_list))]
     else:
         return population[fitness_list.index(min(fitness_list))]
 
- # Adapt - Rita
 
 def genetic_algorithm(
     initial_population: list[Solution],
@@ -39,32 +53,34 @@ def genetic_algorithm(
     Returns:
         Solution: The best solution found on the last population after evolving for max_gen generations.
     """
-    # 1. Initialize a population with N individuals
+
+    # Initialize a population with N individuals
     population = initial_population
 
-    # 2. Repeat until termination condition
+    # Repeat until termination condition
     for gen in range(1, max_gen + 1):
         if verbose:
             print(f'-------------- Generation: {gen} --------------')
 
-        # 2.1. Create an empty population P'
+        # Create an empty population P'
         new_population = []
 
-        # 2.2. If using elitism, insert best individual from P into P'
+        # If using elitism, insert best individual from P into P'
         if elitism:
-            new_population.append(deepcopy(get_best_ind(initial_population, maximization)))
+            best_ind= get_best_ind(population, maximization)
+            new_population.append(deepcopy(best_ind))
         
-        # 2.3. Repeat until P' contains N individuals
+        # Repeat until P' contains N individuals
         while len(new_population) < len(population):
-            # 2.3.1. Choose 2 individuals from P using a selection algorithm
+
+            # Select two parents using a selection algorithm
             first_ind = selection_algorithm(population, maximization)
             second_ind = selection_algorithm(population, maximization)
 
             if verbose:
                 print(f'Selected individuals:\n{first_ind}\n{second_ind}')
 
-            # 2.3.2. Choose an operator between crossover and replication
-            # 2.3.3. Apply the operator to generate the offspring
+            # Apply crossover with probability
             if random.random() < xo_prob:
                 offspring1, offspring2 = first_ind.crossover(second_ind)
                 if verbose:
@@ -77,9 +93,9 @@ def genetic_algorithm(
             if verbose:
                 print(f'Offspring:\n{offspring1}\n{offspring2}')
             
-            # 2.3.4. Apply mutation to the offspring
+            # Apply mutation to the offspring
             first_new_ind = offspring1.mutation(mut_prob)
-            # 2.3.5. Insert the mutated individuals into P'
+            # Insert the mutated individuals into P'
             new_population.append(first_new_ind)
 
             if verbose:
@@ -91,11 +107,11 @@ def genetic_algorithm(
                 if verbose:
                     print(f'Second mutated individual: {first_new_ind}')
         
-        # 2.4. Replace P with P'
+        # Replace P with P'
         population = new_population
 
         if verbose:
             print(f'Final best individual in generation: {get_best_ind(population, maximization)}')
 
-    # 3. Return the best individual in P
+    # Return the best individual in P
     return get_best_ind(population, maximization)
