@@ -8,7 +8,7 @@ def fitness_proportionate_selection(population: list[SAGASolution], maximization
     Selects an individual using fitness-proportionate (roulette wheel) selection.
 
     Args:
-        population (list[SeatingArrangement]): A list of SeatingArrangement objects.
+        population (list[SAGASolution]): A list of SeatingArrangement objects.
         maximization (bool): If True, maximizes the fitness function; otherwise, minimizes.
 
     Returns:
@@ -16,11 +16,11 @@ def fitness_proportionate_selection(population: list[SAGASolution], maximization
     """
 
     if maximization:
-        fitness_values = [ind.fitness for ind in population]
+        fitness_values = [ind.fitness() for ind in population]
     else:
         # Minimization: Use the inverse of the fitness value
         # Lower fitness should have higher probability of being selected
-        fitness_values = [1 / ind.fitness for ind in population]
+        fitness_values = [1 / ind.fitness() for ind in population]
 
     total_fitness = sum(fitness_values)
 
@@ -40,7 +40,7 @@ def ranking_selection(population: list[SAGASolution], maximization: bool):
     Selects an individual using ranking selection.
 
     Args:
-        population (list[SeatingArrangement]): A list of SeatingArrangement objects.
+        population (list[SAGASolution]): A list of SeatingArrangement objects.
         maximization (bool): If True, maximizes the fitness function; otherwise, minimizes.
 
     Returns:
@@ -51,11 +51,11 @@ def ranking_selection(population: list[SAGASolution], maximization: bool):
     # In minimization, the individual with the lowest fitness receives the highest rank.
     if maximization:
         sorted_population = sorted(
-        population, key=lambda ind: ind.fitness, reverse=False
+        population, key=lambda ind: ind.fitness(), reverse=False
         )
     else:
          sorted_population = sorted(
-        population, key=lambda ind: ind.fitness, reverse=True
+        population, key=lambda ind: ind.fitness(), reverse=True
         )
     
     # Create an ascending ranking from 1 to N=len(population)+1
@@ -78,7 +78,7 @@ def tournament_selection(population: list[SAGASolution], tournament_size: int, m
     Selects an individual using tournament selection.
 
     Args:
-        population (list[SeatingArrangement]): A list of SeatingArrangement objects.
+        population (list[SAGASolution]): A list of SeatingArrangement objects.
         tournament_size (int): Number of individuals to participate in the tournament.
         maximization (bool): If True, maximizes the fitness function; otherwise, minimizes.
 
