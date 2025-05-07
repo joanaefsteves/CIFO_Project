@@ -14,8 +14,7 @@ class SASolution(Solution):
         self.relations_mtx = relations_mtx
         self.nr_tables = 8
         self.nr_guests = 64
-        self.fitness = self.fitness()
-
+        
         if repr:
             repr = self.validate_repr(repr)
 
