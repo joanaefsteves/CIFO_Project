@@ -45,6 +45,66 @@ def repair_repr(offspring_repr):
 
 # 1. Cycle crossover - Tomás
 
+def cycle_crossover(parent1, parent2):
+    """
+    Perform cycle crossover between two parents
+
+    Parameters:
+        parent1 (dict): The first parent representation
+        parent2 (dict): The second parent representation
+
+    Returns:
+        tuple: Two repaired offspring representations after performing the crossover
+    """
+
+    n_tables = len(parent1)
+    offspring1 = {table: [] for table in range(n_tables)}
+    offspring2 = {table: [] for table in range(n_tables)}
+
+    # Flatten parents into single lists
+    flat_parent1 = [guest for guests in parent1.values() for guest in guests]
+    flat_parent2 = [guest for guests in parent2.values() for guest in guests]
+
+    # Initialize offspring as empty lists
+    flat_offspring1 = [None] * 64
+    flat_offspring2 = [None] * 64
+
+    visited = set()
+
+    # Cycle Crossover logic
+    for start_index in range(64):
+        if start_index in visited:
+            continue
+
+        # Start a new cycle
+        index = start_index
+        cycle = []
+
+        while index not in visited:
+            visited.add(index)
+            cycle.append(index)
+            index = flat_parent1.index(flat_parent2[index])
+
+        # Assign genes for the cycle
+        for idx in cycle:
+            flat_offspring1[idx] = flat_parent1[idx]
+            flat_offspring2[idx] = flat_parent2[idx]
+
+    # Fill remaining positions with the other parent's genes
+    for i in range(64):
+        if flat_offspring1[i] is None:
+            flat_offspring1[i] = flat_parent2[i]
+        if flat_offspring2[i] is None:
+            flat_offspring2[i] = flat_parent1[i]
+
+    # Rebuild offspring into table-based representations
+    for i in range(64):
+        table = i // 8
+        offspring1[table].append(flat_offspring1[i])
+        offspring2[table].append(flat_offspring2[i])
+
+    return repair_repr(offspring1), repair_repr(offspring2)
+
 # 2. Geometric crossover 
 
 def one_point_overall(c_point, parent1, parent2, n):
@@ -125,7 +185,8 @@ def crossover(parent1_repr, parent2_repr, crossover_type):
 
     crossover_types = {
         "per_table": one_point_per_table,
-        "overall": one_point_overall
+        "overall": one_point_overall,
+        "cycle": cycle_crossover
     }
     
     if crossover_type not in crossover_types:
