@@ -91,8 +91,8 @@ def tournament_selection(population: list[SAGASolution], tournament_size: int, m
 
     # For maximization, return the individual with the highest fitness
     if maximization:
-        return deepcopy(max(tournament, key=lambda ind: ind.fitness))
+        return deepcopy(max(tournament, key=lambda ind: ind.fitness()))
     
     # For minimization, return the individual with the lowest fitness
     else:
-        return deepcopy(min(tournament, key=lambda ind: ind.fitness))
+        return deepcopy(min(tournament, key=lambda ind: ind.fitness()))
