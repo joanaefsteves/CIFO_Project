@@ -1,7 +1,8 @@
 
 import numpy as np
+import pandas as pd
 from itertools import product
-from genetic_algorithms.algorithm import genetic_algorithm
+from .algorithm import genetic_algorithm
 
 
 def grid_search(relations_mtx, 
@@ -41,19 +42,23 @@ def grid_search(relations_mtx,
         xo_prob=0.9,
         mut_prob=0.1,
         elitism=elitism, 
-        verbose=False
+        verbose=True
         )
 
         results.append({
-        'mutation': mutation,
-        'crossover': crossover,
-        'selection': selection,
+        'mutation': mutation.__name__,
+        'crossover': crossover.__name__,
+        'selection': selection.__name__,
         'elitism': elitism,
         'fitness': best_solution.fitness(),
-        'solution': best_solution
+        'solution': best_solution.repr
         })
+
+    df_results = pd.DataFrame(results)
+
+    best_combination = df_results.loc[df_results['fitness'].idxmax()]
     
-    return results
+    return df_results, best_combination
 
 # Add code to save fitness history and plot later
 # Time each combination takes to run

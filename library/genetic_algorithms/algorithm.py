@@ -74,7 +74,6 @@ def genetic_algorithm(
     # Initialize a population with N individuals
     population = initialize_population(relations_mtx, pop_size)
 
-
     # Repeat until termination condition
     for gen in range(1, max_gen + 1):
         if verbose:
@@ -102,39 +101,44 @@ def genetic_algorithm(
 
             # Apply crossover with probability
             if random.random() < xo_prob:
-                offspring1, offspring2 = crossover_function(first_ind, second_ind)
+                offspring1_repr, offspring2_repr = crossover_function(first_ind.repr, second_ind.repr)
                 if verbose:
                     print(f'Applied crossover')
             else:
-                offspring1, offspring2 = deepcopy(first_ind), deepcopy(second_ind)
+                offspring1_repr, offspring2_repr = deepcopy(first_ind.repr), deepcopy(second_ind.repr)
                 if verbose:
                     print(f'Applied replication')
             
-            if verbose:
-                print(f'Offspring:\n{offspring1}\n{offspring2}')
-            
             # Apply mutation with probability
             if random.random() < mut_prob:
-                first_new_ind = mutation_function(offspring1)
-                second_new_ind = mutation_function(offspring2)
-                
-            # Insert first mutated individuals into P'
+                first_new_ind_repr = mutation_function(offspring1_repr)
+                second_new_ind_repr = mutation_function(offspring2_repr)
+            else:
+                first_new_ind_repr = deepcopy(offspring1_repr)
+                second_new_ind_repr = deepcopy(offspring2_repr)
+            
+            first_new_ind = SASolution(relations_mtx, first_new_ind_repr)
+            second_new_ind = SASolution(relations_mtx, second_new_ind_repr)
+
+            # Insert first individual into P'
             new_population.append(first_new_ind)
 
             if verbose:
-                print(f'First mutated individual: {first_new_ind}')
+                print(f'First individual: {first_new_ind}')
             
-            # Insert second mutated individual into P' if population is not yet completed
+            # Insert second individual into P' if population is not yet completed
             if len(new_population) < len(population):
                 new_population.append(second_new_ind)
                 if verbose:
-                    print(f'Second mutated individual: {first_new_ind}')
+                    print(f'Second individual: {first_new_ind}')
         
         # Replace P with P'
         population = new_population
 
+        final_best = get_best_individuals(population, 1)[0]
+
         if verbose:
-            print(f'Final best individual in generation: {get_best_individuals(population, 1)}')
+            print(f'Final best individual in generation: {final_best}')
 
     # Return the best individual in P
-    return get_best_individuals(population, 1)
+    return final_best

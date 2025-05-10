@@ -1,7 +1,7 @@
 
 import random
 from copy import deepcopy
-from SA_problem.seating_arrangement import SASolution
+from library.SA_problem.seating_arrangement import SASolution
 
 def fitness_proportionate_selection(population: list[SASolution]):
     """
