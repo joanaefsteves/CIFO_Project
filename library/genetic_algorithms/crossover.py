@@ -105,7 +105,7 @@ def cycle_crossover(parent1, parent2):
 
 # 2. Geometric crossover 
 
-def one_point_croosoverl(parent1, parent2):
+def one_point_crossover(parent1, parent2):
     """
     Perform one-point crossover on two parent representations, where the crossover occurs at a single point overall tables
 

@@ -1,10 +1,6 @@
 import numpy as np
-from library.SA_problem.solution import Solution
-from library.genetic_algorithms.mutation import swap_mutation
-from library.genetic_algorithms.crossover import cycle_crossover, one_point_crossover
 
-
-class SASolution(Solution):
+class SASolution():
 
     def __init__ (self, relations_mtx: np.ndarray, repr: dict = None):
         """
@@ -20,6 +16,8 @@ class SASolution(Solution):
         
         if repr:
             repr = self.validate_repr(repr)
+        else: 
+            repr = self.random_initial_representation()
 
         self.repr = repr
 
@@ -110,43 +108,4 @@ class SASolution(Solution):
             output += f"Table {table}: {guests}\n"
             
         return output
-    
-class SAGASolution(SASolution):
 
-    def __init__ (self, relations_mtx: np.ndarray, mutation_function, crossover_function, repr: dict = None):
-        
-        super().__init__(repr=repr, relations_mtx=relations_mtx)
-        
-        self.mutation_function = mutation_function
-        self.crossover_function = crossover_function
-
-    def mutation(self, mut_prob) -> 'SAGASolution':
-        # Apply mutation function to representation
-        new_repr = self.mutation_function(self.repr, mut_prob)
-        # Create and return individual with mutated representation
-        return SAGASolution(
-            relations_mtx=self.relations_mtx, 
-            mutation_function=self.mutation_function,
-            crossover_function=self.crossover_function,
-            repr=new_repr
-        )
-
-    def crossover(self, other_solution: 'SAGASolution') -> tuple:
-        # Apply crossover function to self representation and other solution representation
-        offspring1_repr, offspring2_repr = self.crossover_function(self.repr, other_solution.repr)
-
-        # Create and return offspring with new representations
-        return (
-            SAGASolution(
-                relations_mtx=self.relations_mtx, 
-                mutation_function=self.mutation_function,
-                crossover_function=self.crossover_function,
-                repr=offspring1_repr
-            ),
-            SAGASolution(
-                relations_mtx=self.relations_mtx, 
-                mutation_function=self.mutation_function,
-                crossover_function=self.crossover_function,
-                repr=offspring2_repr
-            )
-        )
