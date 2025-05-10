@@ -1,7 +1,6 @@
 from copy import deepcopy
 import random
 
-# Search + 2 - Matilde
 
 def swap_mutation(repr):
     """
@@ -32,13 +31,14 @@ def swap_mutation(repr):
     while guest1 == guest2:
         guest2, table2 = random.choice(all_guests)
 
-    # Swap tables
-    new_repr[table1].remove(guest1)
-    new_repr[table2].remove(guest2)
-    new_repr[table1].append(guest2)
-    new_repr[table2].append(guest1)
+        # Swap tables
+        new_repr[table1].remove(guest1)
+        new_repr[table2].remove(guest2)
+        new_repr[table1].append(guest2)
+        new_repr[table2].append(guest1)
     
     return new_repr
+
 
 def inversion_mutation(repr, mut_prob):
     """
@@ -85,3 +85,5 @@ def inversion_mutation(repr, mut_prob):
         }
 
     return new_repr
+
+    
