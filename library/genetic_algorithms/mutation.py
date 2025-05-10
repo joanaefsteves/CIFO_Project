@@ -86,3 +86,60 @@ def inversion_mutation(repr, mut_prob):
     return new_repr
 
     
+def heuristic_mutation(repr, relationship_mtx, mut_prob):
+    """
+    Applies a heuristic mutation that swaps a guest with another from a different table
+    if the swap increases the overall happiness (affinity).
+
+    Parameters:
+        repr (dict): Seating arrangement (table index -> list of guest indices)
+        relationship_mtx (np.ndarray): Happiness matrix where [i][j] is the happiness guest i has with guest j
+        mut_prob (float): Probability of applying the mutation
+
+    Returns:
+        dict: A new seating arrangement with a beneficial swap if found
+    """
+   
+    new_repr = deepcopy(repr)
+
+    if random.random() <= mut_prob:
+        all_guests = [(guest, table) for table, guests in repr.items() for guest in guests]
+        guest1, table1 = random.choice(all_guests)
+
+        # Evaluate current happiness of guest1 at their table
+        current_happiness = sum(
+            relationship_mtx[guest1][other] for other in repr[table1] if other != guest1
+        )
+
+        best_gain = 0
+        best_swap = None
+
+        for table2, guests2 in repr.items():
+            if table2 == table1:
+                continue
+
+            for guest2 in guests2:
+                # Calculate happiness if we swap guest1 and guest2
+                temp_table1 = [g if g != guest1 else guest2 for g in repr[table1]]
+                temp_table2 = [g if g != guest2 else guest1 for g in repr[table2]]
+
+                new_happiness1 = sum(relationship_mtx[guest1][g] for g in temp_table2 if g != guest1)
+                new_happiness2 = sum(relationship_mtx[guest2][g] for g in temp_table1 if g != guest2)
+                current_happiness2 = sum(relationship_mtx[guest2][g] for g in repr[table2] if g != guest2)
+
+                total_gain = (new_happiness1 + new_happiness2) - (current_happiness + current_happiness2)
+
+                if total_gain > best_gain:
+                    best_gain = total_gain
+                    best_swap = (guest2, table2)
+
+        if best_swap:
+            guest2, table2 = best_swap
+            new_repr[table1].remove(guest1)
+            new_repr[table2].remove(guest2)
+            new_repr[table1].append(guest2)
+            new_repr[table2].append(guest1)
+
+    return new_repr
+
+
