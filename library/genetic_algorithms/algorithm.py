@@ -1,6 +1,6 @@
 from typing import Callable
 from copy import deepcopy
-from solution import Solution
+from library.SA_problem.solution import Solution
 import random
 
 

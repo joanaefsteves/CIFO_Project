@@ -1,5 +1,8 @@
 import numpy as np
-from library.solution import Solution
+from library.SA_problem.solution import Solution
+from library.genetic_algorithms.mutation import swap_mutation
+from library.genetic_algorithms.crossover import cycle_crossover, one_point_crossover
+
 
 class SASolution(Solution):
 

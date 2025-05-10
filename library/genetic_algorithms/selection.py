@@ -73,7 +73,7 @@ def ranking_selection(population: list[SAGASolution], maximization: bool):
             return deepcopy(ind)
 
 
-def tournament_selection(population: list[SAGASolution], tournament_size: int, maximization: bool):
+def tournament_selection(population: list[SAGASolution], maximization: bool,  tournament_size: int = 5):
     """
     Selects an individual using tournament selection.
 

@@ -43,8 +43,6 @@ def repair_repr(offspring_repr):
 
     return offspring_repr
 
-# 1. Cycle crossover - Tomás
-
 def cycle_crossover(parent1, parent2):
     """
     Perform cycle crossover between two parents
@@ -107,19 +105,20 @@ def cycle_crossover(parent1, parent2):
 
 # 2. Geometric crossover 
 
-def one_point_overall(c_point, parent1, parent2, n):
+def one_point_croosoverl(parent1, parent2):
     """
     Perform one-point crossover on two parent representations, where the crossover occurs at a single point overall tables
 
     Parameters:
-        c_point (int): The crossover point, a value between 1 and n-1
         parent1 (dict): The first parent representation
         parent2 (dict): The second parent representation
-        n (int): The number of tables
-
     Returns:
         tuple: Two repaired offspring representations after performing the crossover
     """
+
+    n = 8 # Number of tables 
+
+    c_point = random.randint(1, n-1)
         
     offspring1 = {}
     offspring2 = {}
@@ -133,65 +132,3 @@ def one_point_overall(c_point, parent1, parent2, n):
             offspring2[i] = parent1[i][:]
 
     return repair_repr(offspring1), repair_repr(offspring2)
-
-'''
-def one_point_per_table(c_point, parent1, parent2, n):
-    """
-    Perform one-point crossover on two parent representations, where the crossover occurs at a single point for each table.
-
-    Parameters:
-        c_point (int): The crossover point, a value between 1 and n-1
-        parent1 (dict): The first parent representation
-        parent2 (dict): The second parent representation
-        n (int): The number of guests per table
-
-    Returns:
-        tuple: Two repaired offspring representations after performing the crossover
-    """
-
-    offspring1 = {}
-    offspring2 = {}
-    
-    for i in range(n):
-        offspring1[i] = parent1[i][:c_point] + parent2[i][c_point:]
-        offspring2[i] = parent2[i][:c_point] + parent1[i][c_point:]
-
-    return repair_repr(offspring1), repair_repr(offspring2)
-'''
-
-
-def crossover(parent1_repr, parent2_repr, crossover_type):
-    """
-    Performs crossover between two parent representations to generate offspring.
-    The crossover type can either be "per_table" or "overall", determining the 
-    way the crossover is performed.
-
-    Parameters:
-        parent1_repr (dict): The first parent representation
-        parent2_repr (dict): The second parent representation
-            Both parents must have the same length and type
-        crossover_type (str): The type of crossover to be performed
-
-    Returns:
-        tuple: Pair of offspring representations (offspring1_repr, offspring2_repr), 
-        of the same type as the parents.
-
-     Raises ValueError if the crossover_type is unkown
-    """
-
-    n = 8 # Number of tables (also the number of guests per table because they match)
-
-    crossover_point = random.randint(1, n-1)
-
-    crossover_types = {
-        "per_table": one_point_per_table,
-        "overall": one_point_overall,
-        "cycle": cycle_crossover
-    }
-    
-    if crossover_type not in crossover_types:
-        raise ValueError(f"Unknown crossover_type: {crossover_type}")
-    
-    offspring1_repr, offspring2_repr = crossover_types[crossover_type](crossover_point, parent1_repr, parent2_repr, n)
-
-    return offspring1_repr, offspring2_repr
