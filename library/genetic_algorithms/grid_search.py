@@ -14,7 +14,7 @@ def grid_search(relations_mtx,
              elitism, 
              pop_size = 100, 
              generations = 100,
-             trials = 30
+             runs = 30
             ):
     
     """
@@ -24,14 +24,14 @@ def grid_search(relations_mtx,
     and the solution from the trial of the combination that achieved the maximum fitness value is returned.
     
     Args:
-        relations_mtx (matrix): The input matrix or data to be used by the genetic algorithm.
+        relations_mtx (matrix): Relationship score matrix to be used by the genetic algorithm to calculate the fitness.
         mutation_functions (list): A list of mutation functions to try.
         crossover_functions (list): A list of crossover functions to try.
         selection_functions (list): A list of selection functions to try.
-        elitism (list): A list of elitism strategies to try.
+        elitism (int): An integer specifying the number of elites, if zero no elitism is applied.
         pop_size (int): The population size for the genetic algorithm (default is 100).
         generations (int): The number of generations to run the genetic algorithm (default is 100).
-        trials (int): The number of trials to run for each combination of parameters (default is 30).
+        runs (int): The number of runs for each combination of parameters (default is 30).
     
     Returns:
         pd.Series: The row from the `log_per_combination.csv` corresponding to the best combination
@@ -54,7 +54,7 @@ def grid_search(relations_mtx,
         with open(log_per_trial, mode='w', newline='') as f:
             writer = csv.writer(f)
             writer.writerow([
-                "trial", "mutation", "crossover", "selection", "elitism",
+                "run", "mutation", "crossover", "selection", "elitism",
                 "best_solution", "fitness", "trial_run_time"
             ])
 
@@ -80,7 +80,7 @@ def grid_search(relations_mtx,
         best_solutions = []
         start_time_total = time.time()
 
-        for trial in range(1, trials + 1):
+        for run in range(1, runs + 1):
 
             start_time = time.time()
                 
@@ -106,7 +106,7 @@ def grid_search(relations_mtx,
             with open(log_per_trial, mode='a', newline='') as f:
                 writer = csv.writer(f)
                 writer.writerow([
-                    trial,
+                    run,
                     mutation.__name__,
                     crossover.__name__,
                     selection.__name__,
