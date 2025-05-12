@@ -1,5 +1,4 @@
 
-import numpy as np
 import pandas as pd
 from itertools import product
 from .algorithm import genetic_algorithm
@@ -42,7 +41,7 @@ def grid_search(relations_mtx,
         xo_prob=0.9,
         mut_prob=0.1,
         elitism=elitism, 
-        verbose=True
+        verbose=False
         )
 
         results.append({
