@@ -2,26 +2,28 @@ import numpy as np
 
 class SASolution():
 
-    def __init__ (self, relations_mtx: np.ndarray, repr: dict = None):
+    def __init__ (self, relations_mtx: np.ndarray, repr: np.ndarray = None):
         """
         Initializes a seating arrangement.
         
         Parameters:
         - relations_mtx: A 64x64 numpy array with the pairwise relationship scores.
+        - repr: A numpy array of length 64, where each index represents a guest
+
         """
 
         self.relations_mtx = relations_mtx
         self.nr_tables = 8
         self.nr_guests = 64
         
-        if repr:
+        if  repr is not None:
             repr = self.validate_repr(repr)
         else:
             repr = self.random_initial_representation()
 
         self.repr = repr
 
-    def validate_repr(self, repr: dict) -> dict:
+    def validate_repr(self, repr: np.ndarray) -> np.ndarray:
         """
         Validates the representation:
         - Make sure there are 8 tables and 64 guests
@@ -33,48 +35,39 @@ class SASolution():
         
         Raises ValueError if the representation is not valid
         """
+       
+        # Verify if the representation has the correct number of guests (64)
+        if repr.shape[0] != self.nr_guests:
+            raise ValueError(f"Representation needs to have {self.nr_guests} guests.")
 
-        # Check if nº of tables is correct 
-        if len(repr) != self.nr_tables:
-            raise ValueError(f"Representation needs to have {self.nr_tables} tables.")
-        
-        # Flatten guest list from all tables
-        all_guests = [guest for guests in repr.values() for guest in guests]
+        # Check if all guests are assigned to tables in the range 0 to 7
+        if not np.all(np.isin(repr, range(self.nr_tables))):
+            raise ValueError("Table assignments must be between 0 and 7.")
 
-        # Check if nº of unique guests is correct (and correct range of idx)
-        if set(all_guests) != set(range(self.nr_guests)):
-            raise ValueError(f"Representation needs to have {self.nr_guests} unique guests.")
-        
         # Check that each table has the correct number of guests
-        for table_id, guests in repr.items():
-            if len(guests) != self.nr_guests // self.nr_tables:
-                raise ValueError(f"Table {table_id} must have exactly {self.nr_guests // self.nr_tables} guests.")
-    
+        for table in range(self.nr_tables):
+            if np.sum(repr == table) != self.nr_guests // self.nr_tables:
+                raise ValueError(f"Table {table} must have exactly {self.nr_guests // self.nr_tables} guests.")
+
         return repr
 
-    def random_initial_representation(self) -> dict:
+    def random_initial_representation(self) -> np.ndarray:
 
         """
         Generates a random seating arrangement.
         Each guest is randomly assigned to one and only one of the 8 tables.
 
         Returns:
-        - A dictionary where each key is a table index (0 to 7) and the value is a list of guest indices assigned to that table.
+        - A numpy array with the initial seating arrangement.
         """
-        
+
         # Make array with the index of the tables from 0 to 7
         # Repeat that array by the nº of guests per table (64 guests/8 tables = 8 guests/table)
-        repr_array = np.repeat(np.arange(self.nr_tables), self.nr_guests // self.nr_tables)
+        repr = np.repeat(np.arange(self.nr_tables), self.nr_guests // self.nr_tables)
 
         # Shuffle the array so the table assignments are random
-        np.random.shuffle(repr_array)
+        np.random.shuffle(repr)
 
-        # Tranform the array in a dictionary
-        repr = {table_id: [] for table_id in range(self.nr_tables)}
-        
-        for guest_id, table_id in enumerate(repr_array):
-            repr[table_id].append(guest_id)
-        
         return repr
     
     def fitness(self) -> int:
@@ -85,17 +78,21 @@ class SASolution():
         Returns:
         - fitness (int): The total happiness score of the current arrangement.
         """
-        fitness = 0
-
-        # Iterate each table's guest list from current dict representation
-        for guests in self.repr.values():
-            # Interate through each guest at current table
-            for i in range(len(guests)):
-                # Sum the relationship scores for all unique pairs at the current table
-                for j in range(i + 1, len(guests)):
-                    fitness += self.relations_mtx[guests[i]][guests[j]]
         
-        return fitness
+        total_fitness = 0
+
+        for table in range(self.nr_tables):
+
+            # Get all guests assigned to the current table
+            guests_at_table = np.where(self.repr == table)[0]
+
+            # Sum the relationship scores for all unique pairs at this table
+            for i in range(len(guests_at_table)):
+
+                for j in range(i + 1, len(guests_at_table)):
+                    total_fitness += self.relations_mtx[guests_at_table[i], guests_at_table[j]]
+
+        return total_fitness
 
     def __str__(self):
         """
@@ -104,8 +101,9 @@ class SASolution():
         
         output = ""
 
-        for table, guests in self.repr.items():
-            output += f"Table {table}: {guests}\n"
-            
+        for table in range(self.nr_tables):
+            guests_at_table = np.where(self.repr == table)[0]
+            output += f"Table {table}: {guests_at_table.tolist()}\n"
+
         return output
 
