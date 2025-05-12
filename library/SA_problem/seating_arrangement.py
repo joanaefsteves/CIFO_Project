@@ -16,7 +16,7 @@ class SASolution():
         
         if repr:
             repr = self.validate_repr(repr)
-        else: 
+        else:
             repr = self.random_initial_representation()
 
         self.repr = repr

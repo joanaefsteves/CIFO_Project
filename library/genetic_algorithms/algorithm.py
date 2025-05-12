@@ -55,24 +55,27 @@ def genetic_algorithm(
     """
     Executes a genetic algorithm to optimize a population of solutions.
 
-    Args:
+    Parameters:
         initial_population (list[Solution]): The starting population of solutions.
         max_gen (int): The maximum number of generations to evolve.
         selection_algorithm (Callable): Function used for selecting individuals.
         mutation_function (Callable): Function used to apply mutation.
         crossover_function (Callable): Function used to apply crossover.
-        maximization (bool, optional): If True, maximizes the fitness function; otherwise, minimizes. Defaults to False.
-        xo_prob (float, optional): Probability of applying crossover. Defaults to 0.9.
-        mut_prob (float, optional): Probability of applying mutation. Defaults to 0.2.
-        elitism (bool, optional): If True, carries the best individual to the next generation. Defaults to True.
-        verbose (bool, optional): If True, prints detailed logs for debugging. Defaults to False.
+        xo_prob (float): Probability of applying crossover. Defaults to 0.9.
+        mut_prob (float): Probability of applying mutation. Defaults to 0.2.
+        elitism (bool): If True, carries the best individual to the next generation. Defaults to True.
+        verbose (bool): If True, prints detailed logs for debugging. Defaults to False.
 
     Returns:
         Solution: The best solution found on the last population after evolving for max_gen generations.
+        List: List of fitness values from the best inidvidual in each generation.
     """
 
     # Initialize a population with N individuals
     population = initialize_population(relations_mtx, pop_size)
+
+    # Initialize list to save the fitness of the final best inidvidual per generation
+    best_fitness_per_gen = []
 
     # Repeat until termination condition
     for gen in range(1, max_gen + 1):
@@ -118,7 +121,6 @@ def genetic_algorithm(
                 second_new_ind_repr = deepcopy(offspring2_repr)
             
             first_new_ind = SASolution(relations_mtx, first_new_ind_repr)
-            second_new_ind = SASolution(relations_mtx, second_new_ind_repr)
 
             # Insert first individual into P'
             new_population.append(first_new_ind)
@@ -128,17 +130,23 @@ def genetic_algorithm(
             
             # Insert second individual into P' if population is not yet completed
             if len(new_population) < len(population):
+                second_new_ind = SASolution(relations_mtx, second_new_ind_repr)
                 new_population.append(second_new_ind)
+
                 if verbose:
                     print(f'Second individual: {first_new_ind}')
         
         # Replace P with P'
         population = new_population
 
+        # Get the best individual from P in current generation
         final_best = get_best_individuals(population, 1)[0]
+
+        # Save fiteness of best individual from P in current generation
+        best_fitness_per_gen.append(final_best.fitness())
 
         if verbose:
             print(f'Final best individual in generation: {final_best}')
 
     # Return the best individual in P
-    return final_best
+    return final_best, best_fitness_per_gen

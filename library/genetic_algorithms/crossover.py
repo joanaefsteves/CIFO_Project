@@ -14,7 +14,7 @@ def repair_repr(offspring_repr):
     """
 
     n_guests = 64
-
+    
     # The guest list we should have
     all_guests = set(range(n_guests))
 
