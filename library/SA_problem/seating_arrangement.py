@@ -46,7 +46,7 @@ class SASolution():
 
         # Check that each table has the correct number of guests
         for table in range(self.nr_tables):
-            if np.sum(repr == table) != self.nr_guests // self.nr_tables:
+            if np.sum(repr == table) != (self.nr_guests // self.nr_tables):
                 raise ValueError(f"Table {table} must have exactly {self.nr_guests // self.nr_tables} guests.")
 
         return repr

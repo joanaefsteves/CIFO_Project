@@ -150,7 +150,7 @@ def grid_search(relations_mtx: np.ndarray,
                 ])
 
         # Get average fitness of last generation for current combination
-        last_gen_avg_fitness = avg_fitness.iloc[-1]
+        last_gen_avg_fitness = avg_fitness_per_gen.iloc[-1]
 
         if verbose:
             print(f"Last generation average fitness = {last_gen_avg_fitness}")

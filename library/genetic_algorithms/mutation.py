@@ -3,38 +3,25 @@ import random
 
 def swap_mutation(repr):
     """
-    Applies swap mutation to a solution representation with a given probability.
-
-    Swap mutation randomly selects two different positions (genes) in the 
-    representation and swaps their values.
+    Applies swap mutation to a solution repr by swapping the table assignments
+    of two randomly selected guests.
 
     Parameters:
-        representation (dict): The seating arrangement, where each key is a table index (0 to 7),
-                                and the value is a list of guest indices assigned to that table.
-        mut_prob (float): The probability of performing the swap mutation.
-
+        repr (np.ndarray): A 64-element array representing the seating arrangement, where each 
+                            index corresponds to a guest and the value at each index is the table 
+                            number (0 to 7) the guest is assigned to.
+    
     Returns:
-        dict: A new seating arrangement with two guest assignments swapped between tables.
+        np.ndarray: New seating arrangement with two guests table assignment swapped.
     """
 
     new_repr = deepcopy(repr)
 
-    # Flatten
-    all_guests = [(guest, table) for table, guests in repr.items() for guest in guests]
+    # Randomly select two different guests idxs
+    guest1, guest2 = random.sample(range(len(repr)), 2)
 
-    # Randomly select two guests
-    guest1, table1 = random.choice(all_guests)
-    guest2, table2 = random.choice(all_guests)
-
-    # Guarantee we select two different positions
-    while guest1 == guest2:
-        guest2, table2 = random.choice(all_guests)
-
-    # Swap tables
-    new_repr[table1].append(guest2)
-    new_repr[table2].append(guest1)
-    new_repr[table1].remove(guest1)
-    new_repr[table2].remove(guest2)
+    # Swap the table assignments between selected guests
+    new_repr[guest1], new_repr[guest2] = new_repr[guest2], new_repr[guest1]
     
     return new_repr
 
