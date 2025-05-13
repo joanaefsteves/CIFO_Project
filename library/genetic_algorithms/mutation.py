@@ -1,7 +1,8 @@
 from copy import deepcopy
+import numpy as np
 import random
 
-def swap_mutation(repr):
+def swap_mutation(repr: np.ndarray)-> np.ndarray:
     """
     Applies swap mutation to a solution repr by swapping the table assignments
     of two randomly selected guests.
@@ -18,15 +19,14 @@ def swap_mutation(repr):
     new_repr = deepcopy(repr)
 
     # Randomly select two different guests idxs
-    guest1, guest2 = random.sample(range(len(repr)), 2)
+    guest1, guest2 = random.sample(range(len(new_repr)), 2)
 
     # Swap the table assignments between selected guests
     new_repr[guest1], new_repr[guest2] = new_repr[guest2], new_repr[guest1]
     
     return new_repr
 
-
-def inversion_mutation(repr):
+def inversion_mutation(repr: np.ndarray) -> np.ndarray:
     """
     Applies inversion mutation to a solution representation with a given probability.
 
@@ -35,58 +35,103 @@ def inversion_mutation(repr):
     back to tables evenly.
 
     Parameters:
-        repr (dict): The seating arrangement, where each key is a table index (0 to 7),
-                     and the value is a list of guest indices assigned to that table.
-        mut_prob (float): The probability of performing the inversion mutation.
-
+        repr (np.ndarray): A 64-element array representing the seating arrangement, where each 
+                            index corresponds to a guest and the value at each index is the table 
+                            number (0 to 7) the guest is assigned to.
     Returns:
-        dict: A new seating arrangement with a reversed guest subsequence,
-              preserving valid assignment (each guest assigned exactly once).
+        np.ndarray: A new valid seating arrangement, where each guest is assigned to a table and only one table.
     """
 
     new_repr = deepcopy(repr)
 
-    # Flatten
-    all_guests = [guest for table in sorted(repr.keys()) for guest in repr[table]]
+    # To reduce disruption, limit the inversion to a maximum of 8 guests 
+    max_size= 8 
 
-    # Randomly select two positions
-    first_idx = random.randint(0, len(all_guests) - 1)
-    second_idx = first_idx
-    while second_idx == first_idx:
-        second_idx = random.randint(0, len(all_guests) - 1)
+    # Randomly select two positions (without replacement)
+    start_idx = random.randint(0, len(new_repr) - max_size)  
+    size = random.randint(2, max_size)
+    end_idx = start_idx + size - 1
 
-    if first_idx > second_idx:
-        first_idx, second_idx = second_idx, first_idx
-
-     # Invert subsequence
-    reversed_subsequence = list(reversed(all_guests[first_idx:second_idx + 1]))
-    all_guests = all_guests[:first_idx] + reversed_subsequence + all_guests[second_idx + 1:]
-
-    # Rebuild the dictionary structure with equal guests per table
-    guests_per_table = len(all_guests) // len(repr)
-    new_repr = {
-        i: all_guests[i * guests_per_table:(i + 1) * guests_per_table]
-        for i in range(len(repr))
-    }
+    # Reverse the subsequence
+    new_repr[start_idx:end_idx] = new_repr[start_idx:end_idx+1][::-1]
 
     return new_repr
 
-    
-def heuristic_mutation(repr, relationship_mtx):
+def heuristic_mutation(repr:np.ndarray, relationship_mtx:np.ndarray)-> np.ndarray:  
     """
     Applies a heuristic mutation that swaps a guest with another from a different table
     if the swap increases the overall happiness (affinity).
 
     Parameters:
-        repr (dict): Seating arrangement (table index -> list of guest indices)
+        repr (np.ndarray): A 64-element array representing the seating arrangement, where each 
+                            index corresponds to a guest and the value at each index is the table 
+                            number (0 to 7) the guest is assigned to.
         relationship_mtx (np.ndarray): Happiness matrix where [i][j] is the happiness guest i has with guest j
-        mut_prob (float): Probability of applying the mutation
 
     Returns:
-        dict: A new seating arrangement with a beneficial swap if found
+        np.ndarray: A new valid seating arrangement, where each guest is assigned to a table and only one table.
     """
    
     new_repr = deepcopy(repr)
+
+    # Choose a random guest
+    guest1= random.randint(0, len(repr) - 1)
+
+    # Get the table the guest is assigned to
+    table1= repr[guest1]
+
+    # Get the guests assigned to the same table as guest
+    guests_table1 = [i for i in range(len(new_repr)) if new_repr[i] == table1 and i != guest1]
+
+    # Calculate the current happiness of guest1 at their table
+    current_happiness1 = sum(relationship_mtx[guest1][other] for other in guests_table1)
+
+    best_gain = 0
+    best_guest2 = None
+
+    # Go through all possible swap candidates
+    for guest2 in range(len(repr)):
+        table2 = new_repr[guest2]
+
+        # Skip same guest or same table (we want a swap between tables)
+        is_same_guest = guest2 == guest1
+        is_same_table = table2 == table1
+
+        if not is_same_guest and not is_same_table:
+            # Simulate the swap
+            table1_after = [guest2 if g == guest1 else g for g in range(len(new_repr)) if new_repr[g] == table1]
+            table2_after = [guest1 if g == guest2 else g for g in range(len(new_repr)) if new_repr[g] == table2]
+
+            # Calculate new happiness
+            new_happiness1 = sum(relationship_mtx[guest1][g] for g in table2_after if g != guest1)
+            new_happiness2 = sum(relationship_mtx[guest2][g] for g in table1_after if g != guest2)
+
+            # Calculate old happiness of guest2
+            current_happiness2 = sum(relationship_mtx[guest2][g] for g in range(len(new_repr)) if new_repr[g] == table2 and g != guest2)
+
+            total_gain = (new_happiness1 + new_happiness2) - (current_happiness1 + current_happiness2)
+
+            if total_gain > best_gain:
+                best_gain = total_gain
+                best_guest2 = guest2
+
+    # If we found a good swap, apply it
+    if best_guest2 is not None:
+        new_repr[guest1], new_repr[best_guest2] = new_repr[best_guest2], new_repr[guest1]
+
+    return new_repr
+
+
+
+
+
+
+
+
+
+
+
+
 
     all_guests = [(guest, table) for table, guests in repr.items() for guest in guests]
     guest1, table1 = random.choice(all_guests)
