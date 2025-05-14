@@ -1,13 +1,49 @@
-
 import pandas as pd
 import numpy as np
 from itertools import product
 import csv
 import os
+from concurrent.futures import ProcessPoolExecutor
 from .algorithm import genetic_algorithm
 
+def single_run(run, mutation, crossover, selection, elitism, relations_mtx, pop_size, generations):
+    """
+    Executes a single run of the genetic algorithm with the given hyperparameters and returns the best solution and fitnes history.
 
-def grid_search(relations_mtx: np.ndarray, 
+    Args:
+        run (int): The index of the current run.
+        mutation (function): The mutation function to be used in the genetic algorithm. 
+        crossover (function): The crossover function to be used in the genetic algorithm.
+        selection (function): The selection function to be used in the genetic algorithm.
+        elitism (int): The number of elits, if zero elitism is not applied.
+        relations_mtx (matrix): Relationship score matrix to be used by the genetic algorithm to calculate the fitness.
+        pop_size (int): The size of the population for the genetic algorithm.
+        generations (int): The number of generations to run the genetic algorithm.
+
+    Returns:
+        tuple: A tuple containing the following elements:
+            - run (int): The index of the current run.
+            - final_best (object): The best solution (individual) found in this run.
+            - best_fitness_per_gen (list): A list of best fitness values per generation.
+    
+    """
+
+    final_best, best_fitness_per_gen = genetic_algorithm(
+        relations_mtx,
+        pop_size=pop_size,
+        max_gen=generations,
+        selection_algorithm=selection,
+        mutation_function=mutation,
+        crossover_function=crossover,
+        xo_prob=0.9,
+        mut_prob=0.1,
+        elitism=elitism, 
+        verbose=False
+    )
+
+    return run, final_best, best_fitness_per_gen
+
+def grid_search_par(relations_mtx: np.ndarray, 
              mutation_functions: list, 
              crossover_functions: list, 
              selection_functions: list, 
@@ -30,7 +66,7 @@ def grid_search(relations_mtx: np.ndarray,
     We assume there may be cases where more than one combination achieve the same average fitness in 
     the final generation.
     
-    Args:
+    Parameters:
         relations_mtx (matrix): Relationship score matrix to be used by the genetic algorithm to calculate the fitness.
         mutation_functions (list): A list of mutation functions to try.
         crossover_functions (list): A list of crossover functions to try.
@@ -95,32 +131,24 @@ def grid_search(relations_mtx: np.ndarray,
         runs_fitness_per_gen = []
         best_solutions = []
 
-        # Run the algorithm multiple times for the current combination 
-        for run in range(1, runs + 1):
-                
-            final_best, best_fitness_per_gen = genetic_algorithm(
-            relations_mtx,
-            pop_size=pop_size,
-            max_gen=generations,
-            selection_algorithm=selection,
-            mutation_function=mutation,
-            crossover_function=crossover,
-            xo_prob=0.9,
-            mut_prob=0.1,
-            elitism=elitism, 
-            verbose=False
-            )
+         # Parallelize the 30 runs for current combination
+        with ProcessPoolExecutor() as executor:
+            futures = [
+                executor.submit(single_run, run, mutation, crossover, selection, elitism, relations_mtx, pop_size, generations)
+                for run in range(1, runs + 1)
+            ]
 
-            # Store fitness evolution for current run
-            runs_fitness_per_gen.append(best_fitness_per_gen)
-            best_solutions.append(final_best)
+            for future in futures:
+                run_idx, final_best, best_fitness_per_gen = future.result()
+                runs_fitness_per_gen.append(best_fitness_per_gen)
+                best_solutions.append(final_best)
 
-            # Log fitness per generation for current run
-            with open(fitness_per_run_log, mode='a', newline='') as f:
+                # Log fitness per generation for current run
+                with open(fitness_per_run_log, mode='a', newline='') as f:
                     writer = csv.writer(f)
                     for generation, fitness in enumerate(best_fitness_per_gen, 1):
                         writer.writerow([
-                            run,
+                            run_idx,
                             mutation.__name__,
                             crossover.__name__,
                             selection.__name__,
@@ -129,8 +157,8 @@ def grid_search(relations_mtx: np.ndarray,
                             fitness
                         ])
 
-            if verbose:
-                print(f"Run {run}: Best fitness = {final_best.fitness()}")
+                if verbose:
+                    print(f"Run {run_idx}: Best fitness = {final_best.fitness()}")
 
         # Compute average fitness per generation across all runs
         fitness_df = pd.DataFrame(runs_fitness_per_gen).T
@@ -180,5 +208,5 @@ def grid_search(relations_mtx: np.ndarray,
                 "last_gen_avg_fitness": last_gen_avg_fitness,
                 "solution with highest fitness": solution_highest_fitness
             })
-            
+ 
     return best_combinations_info
