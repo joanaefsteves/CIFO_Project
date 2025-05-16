@@ -3,6 +3,7 @@ import numpy as np
 from itertools import product
 import csv
 import os
+import time
 from concurrent.futures import ProcessPoolExecutor
 from .algorithm import genetic_algorithm
 
@@ -125,12 +126,13 @@ def grid_search_par(relations_mtx: np.ndarray,
 
     # Iterate trough each combination of hyperparameters
     for mutation, crossover, selection, elitism in param_grid:
-
+       
         if verbose: 
             print(f"_________________________________________________________________________________________________________________")
             print(f"Mutation: {mutation.__name__}, Crossover: {crossover.__name__}, Selection: {selection.__name__}, Elits: {elitism}")
 
-
+        start_time = time.time()
+        
         runs_fitness_per_gen = []
         best_solutions = []
 
@@ -182,6 +184,7 @@ def grid_search_par(relations_mtx: np.ndarray,
 
         # Get average fitness of last generation for current combination
         last_gen_avg_fitness = avg_fitness_per_gen.iloc[-1]
+        execution_time = time.time() - start_time
 
         if verbose:
             print(f"Last generation average fitness = {last_gen_avg_fitness}")
@@ -198,7 +201,8 @@ def grid_search_par(relations_mtx: np.ndarray,
                 "selection": selection.__name__,
                 "elitism": elitism,
                 "last_gen_avg_fitness": last_gen_avg_fitness,
-                "solution_highest_fitness": solution_highest_fitness
+                "solution_highest_fitness": solution_highest_fitness,
+                "execution_time": execution_time
             }]
         # If current combination has equal avg fitness at last gen add best combination info
         # to list of best combinations
@@ -209,7 +213,8 @@ def grid_search_par(relations_mtx: np.ndarray,
                 "selection": selection.__name__,
                 "elitism": elitism,
                 "last_gen_avg_fitness": last_gen_avg_fitness,
-                "solution_highest_fitness": solution_highest_fitness
+                "solution_highest_fitness": solution_highest_fitness,
+                "execution_time": execution_time
             })
  
     return best_combinations_info
