@@ -3,7 +3,7 @@ import random
 from copy import deepcopy
 from library.SA_problem.seating_arrangement import SASolution
 
-def fitness_proportionate_selection(population: list[SASolution]):
+def fitness_proportionate_selection(population: list[SASolution]) -> SASolution:
     """
     Selects an individual using fitness-proportionate (roulette wheel) selection.
 
@@ -29,7 +29,7 @@ def fitness_proportionate_selection(population: list[SASolution]):
             return deepcopy(ind)
         
 
-def ranking_selection(population: list[SASolution]):
+def ranking_selection(population: list[SASolution]) -> SASolution:
     """
     Selects an individual using ranking selection.
 
@@ -44,7 +44,6 @@ def ranking_selection(population: list[SASolution]):
     sorted_population = sorted(
     population, key=lambda ind: ind.fitness(), reverse=False
     )
-
     
     # Create an ascending ranking from 1 to N=len(population)+1
     rank_scores= range(1, len(sorted_population) + 1) 
@@ -61,7 +60,7 @@ def ranking_selection(population: list[SASolution]):
             return deepcopy(ind)
 
 
-def tournament_selection(population: list[SASolution],  tournament_size: int = 5):
+def tournament_selection(population: list[SASolution],  tournament_size: int = 5) -> SASolution:
     """
     Selects an individual using tournament selection.
 
@@ -75,6 +74,6 @@ def tournament_selection(population: list[SASolution],  tournament_size: int = 5
     """
     
     # random.sample-> selects, randomly, the individuals without replacement 
-    tournament= random.sample(population, k=tournament_size)
+    tournament = random.sample(population, k=tournament_size)
 
     return deepcopy(max(tournament, key=lambda ind: ind.fitness()))

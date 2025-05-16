@@ -28,24 +28,23 @@ def swap_mutation(repr: np.ndarray)-> np.ndarray:
 
 def inversion_mutation(repr: np.ndarray) -> np.ndarray:
     """
-    Applies inversion mutation to a solution representation with a given probability.
+    Applies inversion mutation to a solution representation.
 
     Inversion mutation reverses the order of a subsequence of guests in the flattened
-    list of all guests and then rebuilds the seating arrangement by assigning them 
-    back to tables evenly.
+    list of all guests. 
 
     Parameters:
         repr (np.ndarray): A 64-element array representing the seating arrangement, where each 
                             index corresponds to a guest and the value at each index is the table 
                             number (0 to 7) the guest is assigned to.
     Returns:
-        np.ndarray: A new valid seating arrangement, where each guest is assigned to a table and only one table.
+        np.ndarray: A new valid seating arrangement with 1/8 of guests table assigments inversed.
     """
 
     new_repr = deepcopy(repr)
 
-    # To reduce disruption, limit the inversion to a maximum of 8 guests 
-    max_size= 8 
+    # To reduce disruption, limit the inversion to a maximum of 1/8 guests 
+    max_size = int(len(new_repr) / 8)
 
     # Randomly select two positions (without replacement)
     start_idx = random.randint(0, len(new_repr) - max_size)  
@@ -120,5 +119,43 @@ def heuristic_mutation(repr:np.ndarray, relationship_mtx:np.ndarray)-> np.ndarra
         new_repr[guest1], new_repr[best_guest2] = new_repr[best_guest2], new_repr[guest1]
 
     return new_repr
+
+def misfit_mutation(repr: np.ndarray, relationship_mtx: np.ndarray) -> np.ndarray:
+
+    new_repr = deepcopy(repr)
+
+    nr_tables = 8
+
+    # Group guests by table
+    tables = {t: [] for t in range(nr_tables)}
+    for guest, table in enumerate(new_repr):
+        tables[table].append(guest)
+
+    # For each table, find the guest with the lowest happiness
+    least_happy_guests = []
+
+    for table, guests in tables.items():
+        min_happiness = 0
+        least_happy = None
+        for guest in guests:
+            happiness = sum(relationship_mtx[guest][other] for other in guests if other != guest)
+            if happiness < min_happiness:
+                min_happiness = happiness
+                least_happy = guest
+        if least_happy is not None:
+            least_happy_guests.append((least_happy, min_happiness, table))
+
+    # Get two least-happy guests from different tables
+    least_happy_guests.sort(key=lambda x: x[1])
+
+    guest1, _, table1 = least_happy_guests[0]
+    guest2, _, table2 = least_happy_guests[1]
+
+    # Make sure it's diff tables, if yes swap
+    if table1 != table2:
+        new_repr[guest1], new_repr[guest2] = new_repr[guest2], new_repr[guest1]
+
+    return new_repr
+
 
 

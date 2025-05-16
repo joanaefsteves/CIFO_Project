@@ -47,7 +47,7 @@ def grid_search_par(relations_mtx: np.ndarray,
              mutation_functions: list, 
              crossover_functions: list, 
              selection_functions: list, 
-             elitism: list, 
+             elitism: list | None = None, 
              pop_size: int = 100, 
              generations: int = 100,
              runs: int = 30,
@@ -88,6 +88,9 @@ def grid_search_par(relations_mtx: np.ndarray,
     # crossover probability = 0.9
     # mutation probability = 0.1
     # when selection method is tournment: tournment size = 3
+
+    if elitism is None:
+        elitism = [1] 
 
     # Create log files 
     fitness_per_run_log = "fitness_per_run.csv"
@@ -195,7 +198,7 @@ def grid_search_par(relations_mtx: np.ndarray,
                 "selection": selection.__name__,
                 "elitism": elitism,
                 "last_gen_avg_fitness": last_gen_avg_fitness,
-                "solution with highest fitness": solution_highest_fitness
+                "solution_highest_fitness": solution_highest_fitness
             }]
         # If current combination has equal avg fitness at last gen add best combination info
         # to list of best combinations
@@ -206,7 +209,7 @@ def grid_search_par(relations_mtx: np.ndarray,
                 "selection": selection.__name__,
                 "elitism": elitism,
                 "last_gen_avg_fitness": last_gen_avg_fitness,
-                "solution with highest fitness": solution_highest_fitness
+                "solution_highest_fitness": solution_highest_fitness
             })
  
     return best_combinations_info
