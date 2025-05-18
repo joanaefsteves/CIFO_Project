@@ -135,7 +135,7 @@ def misfit_mutation(repr: np.ndarray, relationship_mtx: np.ndarray) -> np.ndarra
     least_happy_guests = []
 
     for table, guests in tables.items():
-        min_happiness = 0
+        min_happiness = float('inf')
         least_happy = None
         for guest in guests:
             happiness = sum(relationship_mtx[guest][other] for other in guests if other != guest)
