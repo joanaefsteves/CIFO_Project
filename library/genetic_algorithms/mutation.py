@@ -52,7 +52,7 @@ def inversion_mutation(repr: np.ndarray, _) -> np.ndarray:
     end_idx = start_idx + size - 1
 
     # Reverse the subsequence
-    new_repr[start_idx:end_idx] = new_repr[start_idx:end_idx+1][::-1]
+    new_repr[start_idx:end_idx + 1] = new_repr[start_idx:end_idx + 1][::-1]
 
     return new_repr
 
