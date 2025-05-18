@@ -2,7 +2,7 @@ from copy import deepcopy
 import numpy as np
 import random
 
-def swap_mutation(repr: np.ndarray)-> np.ndarray:
+def swap_mutation(repr: np.ndarray, _)-> np.ndarray:
     """
     Applies swap mutation to a solution repr by swapping the table assignments
     of two randomly selected guests.
@@ -26,7 +26,7 @@ def swap_mutation(repr: np.ndarray)-> np.ndarray:
     
     return new_repr
 
-def inversion_mutation(repr: np.ndarray) -> np.ndarray:
+def inversion_mutation(repr: np.ndarray, _) -> np.ndarray:
     """
     Applies inversion mutation to a solution representation.
 

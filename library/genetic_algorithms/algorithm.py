@@ -114,8 +114,8 @@ def genetic_algorithm(
             
             # Apply mutation with probability
             if random.random() < mut_prob:
-                first_new_ind_repr = mutation_function(offspring1_repr)
-                second_new_ind_repr = mutation_function(offspring2_repr)
+                first_new_ind_repr = mutation_function(offspring1_repr, relations_mtx)
+                second_new_ind_repr = mutation_function(offspring2_repr, relations_mtx)
             else:
                 first_new_ind_repr = deepcopy(offspring1_repr)
                 second_new_ind_repr = deepcopy(offspring2_repr)
