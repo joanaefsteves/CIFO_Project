@@ -50,7 +50,7 @@ def genetic_algorithm(
     xo_prob: float = 0.9,
     mut_prob: float = 0.2,
     elitism: int = 1,
-    verbose: bool = False,
+    verbose: bool = False
 ):
     """
     Executes a genetic algorithm to optimize a population of solutions.
@@ -63,7 +63,7 @@ def genetic_algorithm(
         crossover_function (Callable): Function used to apply crossover.
         xo_prob (float): Probability of applying crossover. Defaults to 0.9.
         mut_prob (float): Probability of applying mutation. Defaults to 0.2.
-        elitism (bool): If True, carries the best individual to the next generation. Defaults to True.
+        elitism (int): Carries nr of elits, if 0 no elitism is applied. Defaults to 1.
         verbose (bool): If True, prints detailed logs for debugging. Defaults to False.
 
     Returns:

@@ -4,6 +4,7 @@ from itertools import product
 import csv
 import os
 import time
+import datetime
 from concurrent.futures import ProcessPoolExecutor
 from .algorithm import genetic_algorithm
 
@@ -93,9 +94,10 @@ def grid_search_par(relations_mtx: np.ndarray,
     if elitism is None:
         elitism = [1] 
 
-    # Create log files 
-    fitness_per_run_log = "fitness_per_run.csv"
-    avg_fitness_per_gen_log = "avg_fitness_per_generation.csv"
+    timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+
+    fitness_per_run_log = f"fitness_per_run_{timestamp}.csv"
+    avg_fitness_per_gen_log = f"avg_fitness_per_generation_{timestamp}.csv"
 
     if not os.path.exists(fitness_per_run_log):
         with open(fitness_per_run_log, mode='w', newline='') as f:
@@ -218,3 +220,4 @@ def grid_search_par(relations_mtx: np.ndarray,
             })
  
     return best_combinations_info
+

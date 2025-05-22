@@ -125,7 +125,6 @@ def uniform_crossover(parent1: np.ndarray, parent2: np.ndarray) -> tuple[np.ndar
 
     return repair_repr(offspring1), repair_repr(offspring2)
 
-
 def geometric_crossover(parent1: np.ndarray, parent2: np.ndarray, alpha: float = 0.5) -> tuple[np.ndarray, np.ndarray]:
     """
     Perform geometric crossover using a blending factor alpha.
@@ -146,7 +145,6 @@ def geometric_crossover(parent1: np.ndarray, parent2: np.ndarray, alpha: float =
     offspring2 = repair_repr(np.round(offspring2).astype(int))
 
     return offspring1, offspring2
-
 
 def multi_parent_crossover(parents: list[np.ndarray]) -> np.ndarray:
     """
