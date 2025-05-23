@@ -1,11 +1,26 @@
+# Group Members - Group P
+# Joana Esteves | 20240746 
+# Matilde Miguel | 20240549 
+# Tomás Figueiredo | 20240941 
+# Rita Serra | 20240515
+
+# General
 import pandas as pd
 import numpy as np
+
+# Grid search
 from itertools import product
+
+# Files
 import csv
 import os
 import time
 import datetime
+
+# Parallelization
 from concurrent.futures import ProcessPoolExecutor
+
+# Genetic algorithm
 from .algorithm import genetic_algorithm
 
 def single_run(run, mutation, crossover, selection, elitism, relations_mtx, pop_size, generations):
@@ -30,6 +45,7 @@ def single_run(run, mutation, crossover, selection, elitism, relations_mtx, pop_
     
     """
 
+    # Single run of genetic algorithm with specified hyperparameters 
     final_best, best_fitness_per_gen = genetic_algorithm(
         relations_mtx,
         pop_size=pop_size,
@@ -67,6 +83,8 @@ def grid_search_par(relations_mtx: np.ndarray,
     the final generation and the final solution with best fitness for the given combination(s). 
     We assume there may be cases where more than one combination achieve the same average fitness in 
     the final generation.
+
+    The runs are parallelized for faster search.
     
     Parameters:
         relations_mtx (matrix): Relationship score matrix to be used by the genetic algorithm to calculate the fitness.
@@ -91,11 +109,14 @@ def grid_search_par(relations_mtx: np.ndarray,
     # mutation probability = 0.1
     # when selection method is tournment: tournment size = 3
 
+    # If no elit nr is specific, fix to 1
     if elitism is None:
         elitism = [1] 
 
+    # Timestamp to differentiate files
     timestamp = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
 
+    # Create files to save results
     fitness_per_run_log = f"fitness_per_run_{timestamp}.csv"
     avg_fitness_per_gen_log = f"avg_fitness_per_generation_{timestamp}.csv"
 

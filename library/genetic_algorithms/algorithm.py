@@ -1,9 +1,17 @@
+# Group Members - Group P
+# Joana Esteves | 20240746 
+# Matilde Miguel | 20240549 
+# Tomás Figueiredo | 20240941 
+# Rita Serra | 20240515
+
+# General 
 import numpy as np
 from typing import Callable
 from copy import deepcopy
-from library.SA_problem.seating_arrangement import SASolution
 import random
 
+# Seating arrangement problme 
+from library.SA_problem.seating_arrangement import SASolution
 
 def get_best_individuals(population: list[SASolution], n_ind: int):
     """

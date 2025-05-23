@@ -1,3 +1,10 @@
+# Group Members - Group P
+# Joana Esteves | 20240746 
+# Matilde Miguel | 20240549 
+# Tomás Figueiredo | 20240941 
+# Rita Serra | 20240515
+
+# General
 import random
 import numpy as np
 from collections import Counter
@@ -29,6 +36,7 @@ def repair_repr(arr: np.ndarray) -> np.ndarray:
         raise ValueError("Mismatch in number of missing and excess table assignments.")
 
     arr = arr.copy()
+
     # Replace excess table assignments with missing ones
     for i in range(len(arr)):
         if excess:
@@ -109,7 +117,7 @@ def one_point_crossover(parent1: np.ndarray, parent2: np.ndarray) -> tuple[np.nd
 
 def uniform_crossover(parent1: np.ndarray, parent2: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """
-    Perform uniform crossover using a random mask.
+    Perform uniform crossover using a random binary mask with uniform distribution.
 
     Parameters:
         parent1 (np.ndarray): The first parent representation
@@ -119,6 +127,7 @@ def uniform_crossover(parent1: np.ndarray, parent2: np.ndarray) -> tuple[np.ndar
         tuple[np.ndarray, np.ndarray]: Two offspring representations after performing the crossover
     """
 
+    # Binary mask with uniform distribution
     mask = np.random.randint(0, 2, size=len(parent1))
     offspring1 = np.where(mask, parent1, parent2)
     offspring2 = np.where(mask, parent2, parent1)
@@ -146,6 +155,7 @@ def geometric_crossover(parent1: np.ndarray, parent2: np.ndarray, alpha: float =
 
     return offspring1, offspring2
 
+# Not selected for grid search
 def multi_parent_crossover(parents: list[np.ndarray]) -> np.ndarray:
     """
     Perform multi-parent crossover using 3 parents.

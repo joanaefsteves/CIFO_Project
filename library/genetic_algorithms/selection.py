@@ -1,13 +1,21 @@
+# Group Members - Group P
+# Joana Esteves | 20240746 
+# Matilde Miguel | 20240549 
+# Tomás Figueiredo | 20240941 
+# Rita Serra | 20240515
 
+# General
 import random
 from copy import deepcopy
+
+# Seating arrangement problem
 from library.SA_problem.seating_arrangement import SASolution
 
 def fitness_proportionate_selection(population: list[SASolution]) -> SASolution:
     """
     Selects an individual using fitness-proportionate (roulette wheel) selection.
 
-    Args:
+    Parameters:
         population (list[SAGASolution]): A list of SeatingArrangement objects.
 
     Returns:
@@ -33,7 +41,7 @@ def ranking_selection(population: list[SASolution]) -> SASolution:
     """
     Selects an individual using ranking selection.
 
-    Args:
+    Parameters:
         population (list[SAGASolution]): A list of SeatingArrangement objects.
 
     Returns:
@@ -64,7 +72,7 @@ def tournament_selection(population: list[SASolution],  tournament_size: int = 5
     """
     Selects an individual using tournament selection.
 
-    Args:
+    Parameters:
         population (list[SAGASolution]): A list of SeatingArrangement objects.
         tournament_size (int): Number of individuals to participate in the tournament.
         maximization (bool): If True, maximizes the fitness function; otherwise, minimizes.

@@ -1,3 +1,10 @@
+# Group Members - Group P
+# Joana Esteves | 20240746 
+# Matilde Miguel | 20240549 
+# Tomás Figueiredo | 20240941 
+# Rita Serra | 20240515
+
+# General
 import numpy as np
 
 class SASolution():

@@ -1,3 +1,10 @@
+# Group Members - Group P
+# Joana Esteves | 20240746 
+# Matilde Miguel | 20240549 
+# Tomás Figueiredo | 20240941 
+# Rita Serra | 20240515
+
+# General
 from copy import deepcopy
 import numpy as np
 import random
@@ -121,6 +128,21 @@ def heuristic_mutation(repr:np.ndarray, relationship_mtx:np.ndarray)-> np.ndarra
     return new_repr
 
 def misfit_mutation(repr: np.ndarray, relationship_mtx: np.ndarray) -> np.ndarray:
+    """
+    Perform a mutation by identifying and swapping the least happy guests from different tables.
+
+    This mutation operator is specifically designed for the seating arrangement problem. It attempts to improve 
+    the overall guest happiness by detecting the two least happy guests from different tables and swapping their seats.
+
+    Parameters:
+        repr (np.ndarray): A 64-element array representing the seating arrangement, where each 
+                            index corresponds to a guest and the value at each index is the table 
+                            number (0 to 7) the guest is assigned to.
+        relationship_mtx (np.ndarray): Happiness matrix where [i][j] is the happiness guest i has with guest j
+
+    Returns:
+        np.ndarray: A mutated version of the seating arrangement with the two least happy guests at their table swapped.
+    """
 
     new_repr = deepcopy(repr)
 
