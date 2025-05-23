@@ -146,7 +146,7 @@ def geometric_crossover(parent1: np.ndarray, parent2: np.ndarray, alpha: float =
     Returns:
         tuple[np.ndarray, np.ndarray]: Two offspring representations after performing the crossover.
     """
-
+    
     offspring1 = alpha * parent1 + (1 - alpha) * parent2
     offspring2 = alpha * parent2 + (1 - alpha) * parent1
 

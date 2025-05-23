@@ -12,7 +12,9 @@ import random
 def swap_mutation(repr: np.ndarray, _)-> np.ndarray:
     """
     Applies swap mutation to a solution repr by swapping the table assignments
-    of two randomly selected guests.
+    of two randomly selected guests if they are assigned to different tables. 
+
+    It runs for 10 attempts to find 2 random guests seated at different tables.
 
     Parameters:
         repr (np.ndarray): A 64-element array representing the seating arrangement, where each 
@@ -25,11 +27,15 @@ def swap_mutation(repr: np.ndarray, _)-> np.ndarray:
 
     new_repr = deepcopy(repr)
 
-    # Randomly select two different guests idxs
-    guest1, guest2 = random.sample(range(len(new_repr)), 2)
+    max_attempts = 10
 
-    # Swap the table assignments between selected guests
-    new_repr[guest1], new_repr[guest2] = new_repr[guest2], new_repr[guest1]
+    for _ in range(max_attempts):
+        # Randomly select two different guests idxs
+        guest1, guest2 = random.sample(range(len(new_repr)), 2)
+        if new_repr[guest1] != new_repr[guest2]:
+            # Swap only if guests are at different tables
+            new_repr[guest1], new_repr[guest2] = new_repr[guest2], new_repr[guest1]
+            break
     
     return new_repr
 
@@ -37,7 +43,7 @@ def inversion_mutation(repr: np.ndarray, _) -> np.ndarray:
     """
     Applies inversion mutation to a solution representation.
 
-    Inversion mutation reverses the order of a subsequence of guests in the flattened
+    Inversion mutation reverses the order of a subsequence of seat assignments in the
     list of all guests. 
 
     Parameters:
