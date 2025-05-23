@@ -144,7 +144,7 @@ def misfit_mutation(repr: np.ndarray, relationship_mtx: np.ndarray) -> np.ndarra
                 least_happy = guest
         if least_happy is not None:
             least_happy_guests.append((least_happy, min_happiness, table))
-
+    
     # Get two least-happy guests from different tables
     least_happy_guests.sort(key=lambda x: x[1])
 
